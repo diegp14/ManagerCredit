@@ -85,11 +85,11 @@ final class CreditViewModel {
         credit.status = .cancelled
         
         // Marcar todos los abonos como cancelados
-        if let payments = credit.payments {
+        let payments = credit.payments
             for payment in payments {
                 payment.status = .cancelled
             }
-        }
+        
         Task { @MainActor in
             try modelContext.save()
             fetchCredits()

@@ -23,7 +23,15 @@ struct CreditRowView: View {
                 Text("Total:")
                     .foregroundStyle(.secondary)
                 Spacer()
-                Text("\(credit.total.formatted())")
+                Text("$\(credit.total.formatted())")
+                    .font(.headline)
+                    .foregroundStyle(.primary)
+            }
+            HStack {
+                Text("Crédito Pendiente:")
+                    .foregroundStyle(.secondary)
+                Spacer()
+                Text("$\(credit.creditBalance.formatted())")
                     .font(.headline)
                     .foregroundStyle(.primary)
             }

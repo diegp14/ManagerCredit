@@ -18,7 +18,7 @@ struct ListPaymentsView: View {
             }else{
                 List {
                     ForEach(Array(payments.enumerated()), id: \.element.id){  index, payment in
-                        Text("# \(index + 1) - \(payment.amount.formatted())")
+                        PaymentRow(payment: payment, index: index)
                         
                     }
                 }
@@ -33,11 +33,7 @@ struct ListPaymentsView: View {
     let payments = credit.payments
     
     NavigationStack {
-        if let payments {
             ListPaymentsView(payments: payments)
-        } else {
-             Text("No Payments")
-        }
     }
     
    

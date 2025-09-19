@@ -13,6 +13,8 @@ struct ContentView: View {
     
     @State private var viewModel: CreditViewModel
     
+    @State private var search: String = ""
+    
     init(modelContext: ModelContext) {
         _viewModel = State(initialValue: CreditViewModel(modelContext: modelContext))
     }
@@ -25,7 +27,7 @@ struct ContentView: View {
         NavigationStack {
             Section{
                 HStack{
-                    TextField("Search", text: .constant("Example"))
+                    TextField("Busqueda", text: $search)
                     Button{
                         showHistoryCredits = true
                         viewModel.fetchHistoryCredits()
@@ -38,7 +40,7 @@ struct ContentView: View {
             .padding(.horizontal)
             List {
                 ForEach(viewModel.credits) { credit in
-                    NavigationLink(destination: CreditDetailView(credit: credit){
+                    NavigationLink(destination: CreditDetailView(modelContext: modelContext, credit: credit){
                         (name, total, payDay, comment) in
                         credit.name = name
                         credit.total = total
@@ -51,6 +53,7 @@ struct ContentView: View {
                         CreditRowView(credit: credit)
                     }
                 }
+                .onDelete(perform: handleDelete)
             }
             .navigationBarTitle("Créditos")
             .onAppear {
@@ -84,6 +87,18 @@ struct ContentView: View {
         .sheet(isPresented: $showHistoryCredits){
             HistoryCreditView(credits: viewModel.historyCredits)
         }
+    }
+    
+    private func handleDelete(at indexSet: IndexSet) {
+        do {
+            for index in indexSet {
+                let creditToDelete = viewModel.credits[index]
+                try viewModel.deleteCredit(credit: creditToDelete)
+            }
+        }catch {
+            print("Error al eliminar el crédito: \(error)")
+        }
+        
     }
     
     private func handleEdit(credit: Credit) {

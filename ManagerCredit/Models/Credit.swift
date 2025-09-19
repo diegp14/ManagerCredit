@@ -24,7 +24,7 @@ final class Credit {
     var createdAt: Date
     
     @Relationship(deleteRule: .cascade, inverse: \Payment.credit)
-    var payments: [Payment]?
+    var payments: [Payment] = []
     
     init(id: UUID, name: String, total: Double, status: CreditStatus, payDay: Int, creditBalance: Double, creditPayment: Double  ,comment: String? = nil) {
         self.id = id
@@ -37,9 +37,8 @@ final class Credit {
         self.creditBalance = creditBalance
         self.creditPayment = creditPayment
         createdAt = Date()
-        self.payments = nil
     }
-    init(id: UUID, name: String, total: Double, status: CreditStatus, payDay: Int, creditBalance: Double, creditPayment: Double  ,comment: String? = nil, payments: [Payment]? = nil) {
+    init(id: UUID, name: String, total: Double, status: CreditStatus, payDay: Int, creditBalance: Double, creditPayment: Double  ,comment: String? = nil, payments: [Payment]) {
         self.id = id
         self.name = name
         self.total = total

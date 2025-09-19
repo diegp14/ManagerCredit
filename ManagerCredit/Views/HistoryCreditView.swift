@@ -6,12 +6,15 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct HistoryCreditView: View {
     
     var credits: [Credit]
     
     @Environment(\.dismiss) private var dismiss
+    
+    @Environment(\.modelContext) private var modelContext: ModelContext
     
     @State var searchText: String = ""
     
@@ -24,7 +27,7 @@ struct HistoryCreditView: View {
             }
             List{
                 ForEach(credits) { credit in
-                    NavigationLink(destination:  CreditDetailView(credit: credit, onEditCredit: {_,_,_,_  in }))
+                    NavigationLink(destination:  CreditDetailView(modelContext: modelContext, credit: credit, onEditCredit: {_,_,_,_  in }))
                     {
                         CreditRowView(credit: credit)
                     }

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct CreditDetailView: View {
     
@@ -14,12 +15,31 @@ struct CreditDetailView: View {
     
     @State private var isPresenting = false
     
+    @State private var viewModel: PaymentViewModel
+    
+    
+    init(modelContext: ModelContext, credit: Credit, onEditCredit: (( String, Double, Int, String ) -> Void)? = nil) {
+        self.credit = credit
+        self.onEditCredit = onEditCredit
+        _viewModel = State(initialValue: PaymentViewModel(modelContext: modelContext))
+    }
+    
     
     var body: some View {
         List{
             if credit.status == .active {
                 Section(header: Text("Abonar")){
-                    NavigationLink(destination: AddPaymentView(credit: credit))
+                    NavigationLink(destination: AddPaymentView(credit: credit){
+                        (amount, date, comment) in
+                        let payment = Payment(id: UUID(), amount: amount, comment: comment, createdAt: date)
+                        do {
+                            try viewModel.addPayment(for: credit, payment: payment)
+                        }catch {
+                            print("Error al agregar el pago: \(error)")
+                        }
+                    }
+                    
+                    )
                     {
                         Label("Abonar", systemImage: "plus")
                             .font(.headline)
@@ -60,12 +80,13 @@ struct CreditDetailView: View {
                 }
                 VStack {
                     Label("Comentario", systemImage: "text.bubble")
-                    Spacer()
-                    Text("\(credit.comment ?? "")")
+                    HStack{
+                        Text("\(credit.comment ?? "")")
+                    }.padding()
                 }
             }
             Section(header: Text("Historial de Abonos")){
-                NavigationLink(destination: ListPaymentsView(payments: credit.payments ?? []))
+                NavigationLink(destination: ListPaymentsView(payments: credit.payments))
                 {
                     Label("Ver Abonos", systemImage: "list.bullet")
                         .font(.headline)
@@ -74,7 +95,7 @@ struct CreditDetailView: View {
                 
             }
         }.toolbar{
-            if credit.status == .active && credit.payments == nil {
+            if credit.status == .active && credit.payments.isEmpty{
                 
                 ToolbarItem(placement: .primaryAction){
                     Button("Editar"){
@@ -96,8 +117,12 @@ struct CreditDetailView: View {
 
 #Preview {
     let credit = Credit.sampleData[1]
+    
+    let sampleData = SampleData.shared
+    
+    
     NavigationStack{
-        CreditDetailView(credit: credit){
+        CreditDetailView(modelContext: sampleData.context, credit: credit){
             (name, total, payDay, comment) in
             print("name: \(name)")
         }

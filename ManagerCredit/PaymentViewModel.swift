@@ -31,4 +31,19 @@ class PaymentViewModel {
             try modelContext.save()
         }
     }
+    
+    func deletePayment(for credit: Credit, payment: Payment) throws {
+        Task { @MainActor in
+            payment.status = .cancelled
+            if credit.payments.firstIndex(of: payment) != nil {
+                credit.creditPayment -= payment.amount
+                credit.creditBalance = max(0, credit.total - credit.creditPayment)
+                if credit.creditBalance > 0 {
+                    credit.status = .active
+                }
+                
+                try modelContext.save()
+            }
+        }
+    }
 }

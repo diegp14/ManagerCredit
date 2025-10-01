@@ -10,6 +10,7 @@ import SwiftUI
 struct ListPaymentsView: View {
     
     let payments: [Payment]
+    var onDelete: (_ index: IndexSet) -> Void
     var body: some View {
        
         NavigationStack {
@@ -20,8 +21,9 @@ struct ListPaymentsView: View {
                     ForEach(Array(payments.enumerated()), id: \.element.id){  index, payment in
                         PaymentRow(payment: payment, index: index)
                         
-                    }
+                    }.onDelete(perform: onDelete)
                 }
+                .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
                 .navigationBarTitle("Lista de Abonos")
             }
         }
@@ -33,7 +35,9 @@ struct ListPaymentsView: View {
     let payments = credit.payments
     
     NavigationStack {
-            ListPaymentsView(payments: payments)
+        ListPaymentsView(payments: payments, onDelete: {
+            index in print("Deleted: \(index)")
+        })
     }
     
    

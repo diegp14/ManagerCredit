@@ -21,23 +21,11 @@ struct ContentView: View {
     
     @State private var showAddCreditView: Bool = false
     @State private var showHistoryCredits: Bool = false
-
+    
     var body: some View {
         
         NavigationStack {
-            Section{
-                HStack{
-                    TextField("Busqueda", text: $search)
-                    Button{
-                        showHistoryCredits = true
-                        viewModel.fetchHistoryCredits()
-                    } label: {
-                        Text("Historial")
-                    }
-                }
-                .padding(.leading)
-            }
-            .padding(.horizontal)
+            
             List {
                 ForEach(viewModel.credits) { credit in
                     NavigationLink(destination: CreditDetailView(modelContext: modelContext, credit: credit){
@@ -47,19 +35,26 @@ struct ContentView: View {
                         credit.payDay = payDay
                         credit.comment = comment
                         handleEdit(credit: credit)
-                    }
-                    )
+                    })
                     {
                         CreditRowView(credit: credit)
                     }
                 }
                 .onDelete(perform: handleDelete)
             }
+            .searchable(text: $search, prompt: "Buscar")
             .navigationBarTitle("Créditos")
             .onAppear {
-                print("👀 Vista apareció")
-                // Recargar por si acaso
                 viewModel.fetchCredits()
+            }
+            .onSubmit(of: .search) {
+                viewModel.fetchCredits(filter: search)
+            }
+            .onChange(of: search) { oldValue, newValue in
+                if newValue.isEmpty {
+                    viewModel.fetchCredits()
+                }
+                
             }
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
@@ -67,6 +62,14 @@ struct ContentView: View {
                         showAddCreditView = true
                     } label:{
                         Image(systemName:"plus")
+                    }
+                }
+                ToolbarItem{
+                    Button{
+                        showHistoryCredits = true
+                        viewModel.fetchHistoryCredits()
+                    } label: {
+                        Text("Historial")
                     }
                 }
             }
@@ -119,7 +122,7 @@ struct ContentView: View {
         
     }
     
-
+    
 }
 
 #Preview {
@@ -127,19 +130,19 @@ struct ContentView: View {
     let sampleData = SampleData.shared
     
     ContentView(modelContext: sampleData.context)
-      .modelContainer(sampleData.modelContainer)
+        .modelContainer(sampleData.modelContainer)
 }
 
 /*
  
  NavigationLink(destination: CreditDetailView(credit: credit, onEditCredit: {
-     name, total, payDay, comment in
-     credit.name = name
-     credit.total = total
-     credit.payDay = payDay
-     credit.comment = comment
-     let creditUpdate = credit
-     handleEdit(credit: creditUpdate)
+ name, total, payDay, comment in
+ credit.name = name
+ credit.total = total
+ credit.payDay = payDay
+ credit.comment = comment
+ let creditUpdate = credit
+ handleEdit(credit: creditUpdate)
  }))
  
  

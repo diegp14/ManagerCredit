@@ -38,7 +38,7 @@ struct CreditDetailView: View {
                             print("Error al agregar el pago: \(error)")
                         }
                     }
-                    
+                                   
                     )
                     {
                         Label("Abonar", systemImage: "plus")
@@ -56,7 +56,6 @@ struct CreditDetailView: View {
                 }
                 
             }
-            
             Section(header: Text("Crédito Información")){
                 HStack {
                     Label("Nombre", systemImage: "creditcard")
@@ -69,7 +68,7 @@ struct CreditDetailView: View {
                     Text("\(credit.total.formatted())")
                 }
                 HStack {
-                    Label("Crédito Pendiente", systemImage: "gauge.with.dots.needle.bottom.0percent")
+                    Label("Crédito Pendiente", systemImage: "gauge.with.dots.needle.67percent")
                     Spacer()
                     Text("\(credit.creditBalance.formatted())")
                 }
@@ -78,15 +77,17 @@ struct CreditDetailView: View {
                     Spacer()
                     Text("\(credit.payDay.formatted())")
                 }
-                VStack {
-                    Label("Comentario", systemImage: "text.bubble")
-                    HStack{
-                        Text("\(credit.comment ?? "")")
-                    }.padding()
+                
+            }
+            
+            Section(header: Label("Comentario", systemImage: "text.bubble")){
+                HStack{
+                    Text("\(credit.comment ?? "")")
                 }
             }
+            
             Section(header: Text("Historial de Abonos")){
-                NavigationLink(destination: ListPaymentsView(payments: credit.payments))
+                NavigationLink(destination: ListPaymentsView(payments: credit.payments, onDelete: handleDeletePayment ))
                 {
                     Label("Ver Abonos", systemImage: "list.bullet")
                         .font(.headline)
@@ -111,6 +112,20 @@ struct CreditDetailView: View {
                         .navigationTitle("Editar Crédito")
                 }
             }
+        }
+    }
+    
+    private func handleDeletePayment(at indexSet: IndexSet) {
+        
+        do {
+            for index in indexSet {
+                let paymentToDelete = credit.payments[index]
+                if paymentToDelete.status == .active {
+                    try viewModel.deletePayment(for: credit, payment: paymentToDelete)
+                }
+            }
+        }catch {
+            print("Error al eliminar el pago: \(error.localizedDescription)")
         }
     }
 }

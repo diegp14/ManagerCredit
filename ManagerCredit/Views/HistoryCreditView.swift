@@ -19,27 +19,24 @@ struct HistoryCreditView: View {
     @State var searchText: String = ""
     
     var body: some View {
-        
-        
         NavigationStack {
-            Section() {
-                TextField("Buscar", text: $searchText)
-            }
             List{
                 ForEach(credits) { credit in
                     NavigationLink(destination:  CreditDetailView(modelContext: modelContext, credit: credit, onEditCredit: {_,_,_,_  in }))
                     {
                         CreditRowView(credit: credit)
                     }
-                    /*
-                    CreditRowView(credit: credit)
-                    
-                     CreditDetailView(credit: credit, onEditCredit: {_,_,_,_  in })
-                     */
-                    
+
                 }
             }
+            .searchable(text: $searchText, prompt: "Buscar")
+            .onSubmit(of: .search) {
+                print("Buscar!!")
                 
+            }
+            .onChange(of: searchText) {oldValue, newValue in
+                print(newValue)
+            }
             .navigationTitle("Historial")
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {

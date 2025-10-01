@@ -12,56 +12,52 @@ import SwiftData
 final class CreditViewModel {
     
     private let modelContext: ModelContext
-
+    
     var credits: [Credit] = []
     var historyCredits: [Credit] = []
     
-    
-   // private var cancelledStatus: CreditStatus
-    private var currentFilter: CreditFilterType = .active
-   
-    
     init(modelContext: ModelContext) {
         self.modelContext = modelContext
-       // self.cancelledStatus = .cancelled
+        // self.cancelledStatus = .cancelled
         fetchCredits()
         
         
     }
     
-    func fetchCredits() {
-      
-        
+    func fetchCredits(filter: String = "") {
         Task{ @MainActor in
             do {
-                // Crear el predicate correctamente
-                // Capturar el valor localmente
-                //let predicate = #Predicate<Credit> { credit in
-                 //   credit.total > 1000
-                //}
-                let descriptor = FetchDescriptor<Credit>( sortBy: [SortDescriptor<Credit>(\.name)])
-                
-                
+                var descriptor = FetchDescriptor<Credit>( sortBy: [SortDescriptor(\.name)])
+                if !filter.isEmpty {
+                    descriptor.predicate = #Predicate<Credit> { credit in
+                        credit.name.localizedStandardContains(filter)
+                    }
+                }
                 let allCredits = try modelContext.fetch(descriptor)
                 
-                // Aplicar filtro según el tipo
+                // Filtrar por status en memoria
                 credits = allCredits.filter { $0.status == .active }
             } catch {
-                print("Failed to fetch credits: \(error)")
+                print("Error al fetch credits: \(error)")
             }
         }
-         
-      }
+    }
     
-    func fetchHistoryCredits() {
+    func fetchHistoryCredits(filter: String = "") {
         
         Task{ @MainActor in
             do {
-                let descriptor = FetchDescriptor<Credit>( sortBy: [SortDescriptor<Credit>(\.name)])
+                var descriptor = FetchDescriptor<Credit>( sortBy: [SortDescriptor<Credit>(\.name)])
+                
+                if !filter.isEmpty {
+                    descriptor.predicate = #Predicate<Credit> { credit in
+                        credit.name.localizedStandardContains(filter)
+                    }
+                }
                 let allCredits = try modelContext.fetch(descriptor)
                 historyCredits = allCredits.filter {
-                                   $0.status == .cancelled || $0.status == .paid
-                               }
+                    $0.status == .cancelled || $0.status == .paid
+                }
             }
         }
     }
@@ -86,9 +82,9 @@ final class CreditViewModel {
         
         // Marcar todos los abonos como cancelados
         let payments = credit.payments
-            for payment in payments {
-                payment.status = .cancelled
-            }
+        for payment in payments {
+            payment.status = .cancelled
+        }
         
         Task { @MainActor in
             try modelContext.save()

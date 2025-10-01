@@ -51,7 +51,7 @@ struct NewCreditView: View {
                    Button{
                        dismiss()
                    } label: {
-                       Text("Cancel")
+                       Text("Cerrar")
                            .foregroundStyle(.red)
                    }
                }

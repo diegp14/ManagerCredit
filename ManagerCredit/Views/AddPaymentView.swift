@@ -33,7 +33,7 @@ struct AddPaymentView: View {
             }
             .toolbar{
                 ToolbarItem(placement: .primaryAction){
-                    Button("Guadar"){
+                    Button("Guardar"){
                         onAddPayment?(amount ?? 0, date, comment)
                         dismiss()
                     }

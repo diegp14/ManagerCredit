@@ -11,12 +11,16 @@ import SwiftData
 struct HistoryCreditView: View {
     
     var credits: [Credit]
+    @Binding var searchText: String
+    var onSubmit: () -> Void
+    var onChange: (String, String) -> Void
+    
     
     @Environment(\.dismiss) private var dismiss
     
     @Environment(\.modelContext) private var modelContext: ModelContext
     
-    @State var searchText: String = ""
+    
     
     var body: some View {
         NavigationStack {
@@ -30,12 +34,10 @@ struct HistoryCreditView: View {
                 }
             }
             .searchable(text: $searchText, prompt: "Buscar")
-            .onSubmit(of: .search) {
-                print("Buscar!!")
+            .onSubmit(of: .search, onSubmit)
+            .onChange(of: searchText){ oldValue, newValue in
+                onChange(oldValue, newValue)
                 
-            }
-            .onChange(of: searchText) {oldValue, newValue in
-                print(newValue)
             }
             .navigationTitle("Historial")
             .toolbar {
@@ -52,7 +54,13 @@ struct HistoryCreditView: View {
 }
 
 #Preview {
+    @Previewable @State var searchText: String = ""
     let credits = Credit.sampleData
     let historicalCredits = credits.filter { $0.status != .active  }
-    HistoryCreditView(credits: historicalCredits)
+    HistoryCreditView(credits: historicalCredits, searchText:$searchText){
+        print("Buscar")
+    } onChange: {
+        oldValue, newValue in
+        print(newValue)
+    }
 }

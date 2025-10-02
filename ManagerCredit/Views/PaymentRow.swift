@@ -14,7 +14,7 @@ struct PaymentRow: View {
     var body: some View {
         HStack {
             Rectangle()
-                .frame(width: 8, height: 102)
+                .frame(width: 8, height: 105)
                 .foregroundColor(payment.status == .cancelled ? Color.red : Color.green)
                 .padding(0)
             VStack {

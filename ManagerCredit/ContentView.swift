@@ -15,6 +15,8 @@ struct ContentView: View {
     
     @State private var search: String = ""
     
+    @State private var searchHistory: String = ""
+    
     init(modelContext: ModelContext) {
         _viewModel = State(initialValue: CreditViewModel(modelContext: modelContext))
     }
@@ -35,8 +37,7 @@ struct ContentView: View {
                         credit.payDay = payDay
                         credit.comment = comment
                         handleEdit(credit: credit)
-                    })
-                    {
+                    }){
                         CreditRowView(credit: credit)
                     }
                 }
@@ -54,7 +55,6 @@ struct ContentView: View {
                 if newValue.isEmpty {
                     viewModel.fetchCredits()
                 }
-                
             }
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
@@ -73,7 +73,6 @@ struct ContentView: View {
                     }
                 }
             }
-            
         }
         .sheet(isPresented: $showAddCreditView) {
             NewCreditView{ name, total, payDay, comment in
@@ -83,12 +82,17 @@ struct ContentView: View {
                 } catch {
                     print("Error al agregar el crédito: \(error)")
                 }
-                
-                
             }
         }
         .sheet(isPresented: $showHistoryCredits){
-            HistoryCreditView(credits: viewModel.historyCredits)
+            HistoryCreditView(credits: viewModel.historyCredits, searchText:$searchHistory){
+                viewModel.fetchHistoryCredits(filter: searchHistory)
+            } onChange: {
+                oldValue, newValue in
+                if newValue.isEmpty {
+                    viewModel.fetchHistoryCredits()
+                }
+            }
         }
     }
     
@@ -119,10 +123,7 @@ struct ContentView: View {
         } catch {
             print("Error al actualizar el crédito: \(error)")
         }
-        
     }
-    
-    
 }
 
 #Preview {

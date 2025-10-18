@@ -8,6 +8,14 @@
 import SwiftUI
 import SwiftData
 
+enum filterOptions: String, CaseIterable, Identifiable {
+    case all = "Todos"
+    case paid = "Pagados"
+    case canceled = "Cancelados"
+    
+    var id: String {self.rawValue}
+}
+
 struct HistoryCreditView: View {
     
     var credits: [Credit]
@@ -20,12 +28,23 @@ struct HistoryCreditView: View {
     
     @Environment(\.modelContext) private var modelContext: ModelContext
     
+    @State private var filterStatus: filterOptions = .all
     
+    var filteredCredits: [Credit] {
+        switch filterStatus {
+        case .all:
+            return credits
+        case .paid:
+            return  credits.filter { $0.status == Credit.CreditStatus.paid }
+        case .canceled:
+            return  credits.filter { $0.status == Credit.CreditStatus.cancelled }
+        }
+    }
     
     var body: some View {
         NavigationStack {
             List{
-                ForEach(credits) { credit in
+                ForEach(filteredCredits) { credit in
                     NavigationLink(destination:  CreditDetailView(modelContext: modelContext, credit: credit, onEditCredit: {_,_,_,_  in }))
                     {
                         CreditRowView(credit: credit)
@@ -41,12 +60,27 @@ struct HistoryCreditView: View {
             }
             .navigationTitle("Historial")
             .toolbar {
-                ToolbarItem(placement: .primaryAction) {
+                ToolbarItem(placement: .cancellationAction) {
                     Button{
                         dismiss()
                     } label:{
-                        Text("Cerrar")
+                        Text("Cerrar").foregroundStyle(.red)
                     }
+                }
+                ToolbarItem(placement: .primaryAction) {
+                    Menu {
+                        Picker("Status", selection: $filterStatus) {
+                            ForEach(filterOptions.allCases){
+                                option in
+                                Text(option.rawValue).tag(option)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                    } label: {
+                        Label("Filtro", systemImage: "slider.horizontal.3")
+                    }
+                        
+                    
                 }
             }
         }

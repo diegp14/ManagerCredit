@@ -11,6 +11,9 @@ struct ListPaymentsView: View {
 
     let payments: [Payment]
     var onDelete: (_ index: IndexSet) -> Void
+    
+    @State private var showAlertDelete = false
+    
     var body: some View {
 
         NavigationStack {
@@ -24,11 +27,28 @@ struct ListPaymentsView: View {
                         PaymentRow(payment: payment, index: index)
                             .swipeActions(edge: .trailing) {
                                 if payment.status == .active {
-                                    Button("Borrar") {
+                                    Button {
                                         print("Borrar \(payment.id)")
-                                        self.onDelete([index])
-                                    }.tint(.red)
+                                        showAlertDelete = true
+                                    } label: {
+                                        Label("Cancelar", systemImage: "trash")
+                                    }
+                                    .tint(.red)
                                 }
+                            }
+                            .alert("Cancelar abono", isPresented: $showAlertDelete) {
+                                /// A destructive button that appears in red.
+                                   Button(role: .destructive) {
+                                       // Perform the deletion
+                                       self.onDelete([index])
+                                   } label: {
+                                       Text("Cancelar")
+                                   }
+                                   
+                                   /// A cancellation button that appears with bold text.
+                                   Button("Cerrar", role: .cancel) {
+                                       // Perform cancellation
+                                   }
                             }
                     }
                     .listRowInsets(.init(top: 10, leading: 0, bottom: 10, trailing: 10))

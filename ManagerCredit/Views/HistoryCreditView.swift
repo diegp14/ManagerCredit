@@ -20,6 +20,8 @@ struct HistoryCreditView: View {
     
     var credits: [Credit]
     @Binding var searchText: String
+    @State private var filterFromDate: Date = Date()
+    @State private var filterToDate: Date = Date()
     var onSubmit: () -> Void
     var onChange: (String, String) -> Void
     
@@ -35,9 +37,9 @@ struct HistoryCreditView: View {
         case .all:
             return credits
         case .paid:
-            return  credits.filter { $0.status == Credit.CreditStatus.paid }
+            return  credits.filter { $0.status == CreditStatus.paid }
         case .canceled:
-            return  credits.filter { $0.status == Credit.CreditStatus.cancelled }
+            return  credits.filter { $0.status == CreditStatus.cancelled }
         }
     }
     
@@ -52,7 +54,7 @@ struct HistoryCreditView: View {
 
                 }
             }
-            .searchable(text: $searchText, prompt: "Buscar")
+            .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Buscar")
             .onSubmit(of: .search, onSubmit)
             .onChange(of: searchText){ oldValue, newValue in
                 onChange(oldValue, newValue)

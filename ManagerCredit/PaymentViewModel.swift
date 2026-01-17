@@ -31,7 +31,7 @@ class PaymentViewModel {
             try modelContext.save()
         }
     }
-    
+    // 
     func deletePayment(for credit: Credit, payment: Payment) throws {
         Task { @MainActor in
             payment.status = .cancelled

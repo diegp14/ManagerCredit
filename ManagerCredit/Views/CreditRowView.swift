@@ -39,7 +39,7 @@ struct CreditRowView: View {
                 Text("Estado:")
                     .foregroundStyle(.secondary)
                 Spacer()
-                Text("\(credit.status.rawValue)")
+                Text("\(credit.status.description)")
                     .font(.headline)
                     .foregroundStyle( credit.status == .cancelled ? .red : credit.status == .paid ? .green : .primary )
                 

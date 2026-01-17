@@ -37,7 +37,7 @@ struct PaymentRow: View {
                 HStack {
                     Text("Estado:")
                     Spacer()
-                    Text(payment.status.rawValue)
+                    Text(payment.status.description)
                         .bold().foregroundStyle(payment.status == .active ? Color.black : Color.red)
                 }
                 

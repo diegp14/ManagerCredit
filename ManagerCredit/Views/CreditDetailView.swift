@@ -41,7 +41,7 @@ struct CreditDetailView: View {
                                    
                     )
                     {
-                        Label("Abonar", systemImage: "plus")
+                        Label("Abonar", systemImage: "plus").foregroundStyle(.black)
                             .font(.headline)
                             .foregroundColor(.accentColor)
                     }
@@ -58,24 +58,24 @@ struct CreditDetailView: View {
             }
             Section(header: Text("Crédito Información")){
                 HStack {
-                    Label("Nombre", systemImage: "creditcard")
+                    Label("Nombre", systemImage: "creditcard").foregroundStyle(.black)
                     Spacer()
                     Text("\(credit.name)")
                 }
                 HStack {
-                    Label("Total", systemImage: "gauge.with.dots.needle.bottom.0percent")
+                    Label("Total", systemImage: "gauge.with.dots.needle.bottom.0percent").foregroundStyle(.black)
                     Spacer()
-                    Text("\(credit.total.formatted())")
+                    Text("\(credit.total.formatted())").foregroundStyle(.black)
                 }
                 HStack {
-                    Label("Crédito Pendiente", systemImage: "gauge.with.dots.needle.67percent")
+                    Label("Crédito Pendiente", systemImage: "gauge.with.dots.needle.67percent").foregroundStyle(.black)
                     Spacer()
-                    Text("\(credit.creditBalance.formatted())")
+                    Text("\(credit.creditBalance.formatted())").foregroundStyle(.black)
                 }
                 HStack {
-                    Label("Día de pago", systemImage: "calendar")
+                    Label("Día de pago", systemImage: "calendar").foregroundStyle(.black)
                     Spacer()
-                    Text("\(credit.payDay.formatted())")
+                    Text("\(credit.payDay.formatted())").foregroundStyle(.black)
                 }
                 
             }
@@ -90,8 +90,7 @@ struct CreditDetailView: View {
                 NavigationLink(destination: ListPaymentsView(payments: credit.payments, onDelete: handleDeletePayment ))
                 {
                     Label("Ver Abonos", systemImage: "list.bullet")
-                        .font(.headline)
-                        .foregroundColor(.accentColor)
+                        .foregroundStyle(.black)
                 }
                 
             }

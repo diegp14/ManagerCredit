@@ -25,7 +25,6 @@ struct ContentView: View {
     @State private var showHistoryCredits: Bool = false
     
     var body: some View {
-        
         NavigationStack {
             
             List {
@@ -37,13 +36,14 @@ struct ContentView: View {
                         credit.payDay = payDay
                         credit.comment = comment
                         handleEdit(credit: credit)
-                    }){
+                    })
+                    {
                         CreditRowView(credit: credit)
                     }
                 }
                 .onDelete(perform: handleDelete)
             }
-            .searchable(text: $search, prompt: "Buscar")
+            .searchable(text: $search, placement: .navigationBarDrawer(displayMode: .automatic), prompt: "Buscar")
             .navigationBarTitle("Créditos")
             .onAppear {
                 viewModel.fetchCredits()
@@ -56,6 +56,9 @@ struct ContentView: View {
                     viewModel.fetchCredits()
                 }
             }
+            .navigationDestination(isPresented: $showHistoryCredits, destination: {
+                
+            })
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Button{

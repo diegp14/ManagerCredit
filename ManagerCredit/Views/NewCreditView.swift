@@ -24,7 +24,7 @@ struct NewCreditView: View {
        NavigationStack {
            Form{
                Section(header: Text("Info Crédito")){
-                   TextField("Nombre", text: $name)
+                   TextField("Descrpción", text: $name)
                    TextField("Total", value: $total, formatter: NumberFormatter())
                        .keyboardType(.decimalPad)
                    Picker("Dia de Pago", selection: $payDay){

@@ -26,7 +26,9 @@ struct ContentView: View {
     
     var body: some View {
         NavigationStack {
-            
+            if viewModel.credits.isEmpty {
+                ContentUnavailableView("Registra un crédito para empezar", systemImage: "creditcard.circle" )
+            }
             List {
                 ForEach(viewModel.credits) { credit in
                     NavigationLink(destination: CreditDetailView(modelContext: modelContext, credit: credit){

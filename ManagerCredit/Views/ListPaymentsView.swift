@@ -84,76 +84,76 @@ struct ListPaymentsView: View {
 
                     }
                     .navigationBarTitle("Lista de Abonos")
-                    .toolbar {
-                        ToolbarItem(placement: .primaryAction) {
-                            Menu {
-                                Picker("Filtro", selection: $selectedStatus) {
-                                    ForEach(PaymentStatusFilter.allCases) {
-                                        status in
-                                        Text(status.description).tag(status)
-                                    }
-                                }
-                            } label: {
-                                Image(systemName: "slider.horizontal.3")
-                                Text("Status")
-                            }
-                        }
-                        ToolbarItem(placement: .automatic) {
-                            Button {
-                                showDatePicker.toggle()
-                            } label: {
-                                //Label("Buscar", systemImage: "calendar")
-                                Image(systemName: "calendar")
-                                Text("Fecha")
-
-                            }
-                            .popover(
-                                isPresented: $showDatePicker,
-                                attachmentAnchor: .point(.bottom),
-                                arrowEdge: .top
-                            ) {
-                                VStack {
-                                    Text("DatePicker")
-                                    LabeledContent("Fecha inicial") {
-                                        DatePicker(
-                                            "",
-                                            selection: $initialDate,
-                                            //displayedComponents: .
-                                        )
-                                    }
-                                    LabeledContent("Fecha final") {
-                                        DatePicker(
-                                            "",
-                                            selection: $finalDate,
-                                            //displayedComponents: .date
-                                        )
-                                    }
-                                    Divider()
-                                    Button {
-                                        displayDate()
-                                        showDatePicker = false
-                                    } label: {
-                                        Text("Buscar")
-                                    }
-                                    .buttonStyle(.borderedProminent)
-                                    .frame(
-                                        maxWidth: .infinity,
-                                        alignment: .trailing
-                                    )
-                                }
-                                .padding()
-                                .presentationCompactAdaptation(.popover)
-                                .frame(minWidth: 300, minHeight: 210)
-                            }
-                        }
-                    }
-                    Text("Abonos mostrados: \(filteredPayments.count)")
-                        .font(.title3)
-                        .fontWeight(.bold)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding()
                 }
             }
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    Menu {
+                        Picker("Filtro", selection: $selectedStatus) {
+                            ForEach(PaymentStatusFilter.allCases) {
+                                status in
+                                Text(status.description).tag(status)
+                            }
+                        }
+                    } label: {
+                        Image(systemName: "slider.horizontal.3")
+                        Text("Status")
+                    }
+                }
+                ToolbarItem(placement: .automatic) {
+                    Button {
+                        showDatePicker.toggle()
+                    } label: {
+                        //Label("Buscar", systemImage: "calendar")
+                        Image(systemName: "calendar")
+                        Text("Fecha")
+
+                    }
+                    .popover(
+                        isPresented: $showDatePicker,
+                        attachmentAnchor: .point(.bottom),
+                        arrowEdge: .top
+                    ) {
+                        VStack {
+                            Text("DatePicker")
+                            LabeledContent("Fecha inicial") {
+                                DatePicker(
+                                    "",
+                                    selection: $initialDate,
+                                    displayedComponents: .date
+                                )
+                            }
+                            LabeledContent("Fecha final") {
+                                DatePicker(
+                                    "",
+                                    selection: $finalDate,
+                                    displayedComponents: .date
+                                )
+                            }
+                            Divider()
+                            Button {
+                                displayDate()
+                                showDatePicker = false
+                            } label: {
+                                Text("Buscar")
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .frame(
+                                maxWidth: .infinity,
+                                alignment: .trailing
+                            )
+                        }
+                        .padding()
+                        .presentationCompactAdaptation(.popover)
+                        .frame(minWidth: 300, minHeight: 210)
+                    }
+                }
+            }
+            Text("Abonos mostrados: \(filteredPayments.count)")
+                .font(.title3)
+                .fontWeight(.bold)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding()
         }
     }
     
